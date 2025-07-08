@@ -11,8 +11,12 @@ export class ProductsService {
     @InjectModel(Product.name) private productModel: Model<Product>,
   ) {}
   async create(createProductDto: CreateProductDto) {
-    const { price, quantity } = createProductDto;
-    const createdProduct = await this.productModel.create({ price, quantity });
+    const { price, quantity, itemName } = createProductDto;
+    const createdProduct = await this.productModel.create({
+      price,
+      quantity,
+      itemName,
+    });
     return {
       message: 'product created successfully',
       product: createdProduct,

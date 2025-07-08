@@ -4,6 +4,11 @@ import mongoose from 'mongoose';
 @Schema({ timestamps: true })
 export class Product {
   @Prop({
+    type: String,
+    required: true,
+  })
+  itemName: string;
+  @Prop({
     type: Number,
     required: true,
   })
@@ -13,12 +18,6 @@ export class Product {
     required: true,
   })
   quantity: number;
-  //   @Prop({
-  //     type: Number,
-  //     required: true,
-  //   })
-  //   total: number;
-
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
