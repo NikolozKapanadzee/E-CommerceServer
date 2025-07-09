@@ -1,7 +1,9 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
+import { IsAuthGuard } from './guard/isAuth.gurad';
+import { UserId } from 'src/users/decorator/user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -14,5 +16,11 @@ export class AuthController {
   @Post('sign-in')
   signIn(@Body() signInDto: SignInDto) {
     return this.authService.signIn(signInDto);
+  }
+  @Get('current-user')
+  @UseGuards(IsAuthGuard)
+  getCurrentuser(@UserId() userId) {
+    console.log(userId);
+    return this.authService.getCurrentUser(userId);
   }
 }

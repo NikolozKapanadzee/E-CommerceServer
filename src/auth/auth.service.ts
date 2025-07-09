@@ -46,4 +46,8 @@ export class AuthService {
     const token = this.jwtService.sign(payload, { expiresIn: '1h' });
     return { token };
   }
+  async getCurrentUser(userId) {
+    const user = await this.userModel.findById(userId);
+    return user;
+  }
 }
