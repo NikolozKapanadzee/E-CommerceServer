@@ -12,8 +12,6 @@ export class ProductsService {
   ) {}
   async create(createProductDto: CreateProductDto) {
     const { price, quantity, itemName } = createProductDto;
-    console.log('test');
-
     const createdProduct = await this.productModel.create({
       price,
       quantity,
