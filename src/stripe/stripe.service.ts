@@ -8,27 +8,30 @@ import { User } from 'src/users/schema/user.schema';
 @Injectable()
 export class StripeService {
   private stripe: Stripe;
+
   constructor(
-    @InjectModel(Transaction.name) private transactionModel: Model<Transaction>,
-    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(Transaction.name)
+    private transactionModel: Model<Transaction>,
+    @InjectModel(User.name)
+    private userModel: Model<User>,
   ) {
     this.stripe = new Stripe(process.env.STRIPE_API_KEY!);
   }
-  async createPayment(userEmail: string, priceId, quantity) {
-    const user = await this.userModel.findOne({ email: userEmail });
-    if (!user?._id) {
-      throw new BadRequestException('User not found');
-    }
+
+  async createPayment(userId: string, priceId: string, quantity: number) {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new BadRequestException('User not found');
 
     const customerId = user.stripeCustomerId
       ? user.stripeCustomerId
-      : await this.createStripeCutomerId(user._id, user.email);
+      : await this.createStripeCustomerId(user._id.toString(), user.email);
+
     const session = await this.stripe.checkout.sessions.create({
       customer: customerId,
       line_items: [
         {
           price: priceId,
-          quantity: quantity,
+          quantity,
         },
       ],
       mode: 'payment',
@@ -43,12 +46,16 @@ export class StripeService {
       sessionId: session.id,
       userId: user._id,
       amount: session.amount_total ? session.amount_total / 100 : 0,
+      status: 'pending',
     });
 
     return { url: session.url };
   }
 
-  async createStripeCutomerId(userId, userEmail) {
+  private async createStripeCustomerId(
+    userId: string,
+    userEmail: string,
+  ): Promise<string> {
     const customer = await this.stripe.customers.create({ email: userEmail });
     await this.userModel.findByIdAndUpdate(
       userId,
@@ -56,5 +63,52 @@ export class StripeService {
       { new: true },
     );
     return customer.id;
+  }
+
+  async webHook(
+    rawBody: Buffer,
+    headers: Record<string, string>,
+  ): Promise<{ received: boolean }> {
+    const sig = headers['stripe-signature'];
+    let event: Stripe.Event;
+
+    try {
+      event = this.stripe.webhooks.constructEvent(
+        rawBody,
+        sig,
+        process.env.STRIPE_WEBHOOK_KEY!,
+      );
+    } catch (err) {
+      console.error('Stripe webhook signature error:', err);
+      throw new BadRequestException('Invalid Stripe webhook signature');
+    }
+
+    switch (event.type) {
+      case 'checkout.session.completed': {
+        const session = event.data.object as Stripe.Checkout.Session;
+        const userId = session.metadata?.userId;
+
+        if (session.payment_status === 'paid' && userId) {
+          await this.transactionModel.findOneAndUpdate(
+            { sessionId: session.id },
+            { status: 'completed' },
+          );
+          console.log(`✅ Payment completed for user: ${userId}`);
+        }
+
+        break;
+      }
+
+      case 'payment_intent.succeeded': {
+        const intent = event.data.object as Stripe.PaymentIntent;
+        console.log(`PaymentIntent succeeded: ${intent.id}`);
+        break;
+      }
+
+      default:
+        console.log(`Unhandled event type: ${event.type}`);
+    }
+
+    return { received: true };
   }
 }

@@ -20,7 +20,7 @@ export class Transaction {
   @Prop({
     type: Number,
   })
-  amount: string;
+  amount: number;
 
   @Prop({
     enum: Status,
