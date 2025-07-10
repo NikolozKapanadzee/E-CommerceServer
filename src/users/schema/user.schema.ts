@@ -19,6 +19,11 @@ export class User {
   password: string;
 
   @Prop({
+    type: String,
+  })
+  stripeCustomerId: string;
+
+  @Prop({
     type: [mongoose.Types.ObjectId],
     ref: 'product',
     default: [],
