@@ -7,15 +7,40 @@ import {
   Delete,
   Put,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  UploadedFiles,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { IsAuthGuard } from 'src/auth/guard/isAuth.gurad';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
+
+  @Delete('file')
+  deleteFile(@Body('fileId') fileId: string) {
+    return this.productsService.deleteFileById(fileId);
+  }
+
+  @Post('get-file')
+  getFile(@Body('fileId') fileId: string) {
+    return this.productsService.getFileById(fileId);
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  UploadFile(@UploadedFile() file: Express.Multer.File) {
+    return this.productsService.uploadFile(file);
+  }
+  @Post('upload-many')
+  @UseInterceptors(FilesInterceptor('files'))
+  UploadFiles(@UploadedFiles() files: Express.Multer.File[]) {
+    return this.productsService.uploadFiles(files);
+  }
 
   @UseGuards(IsAuthGuard)
   @Post()

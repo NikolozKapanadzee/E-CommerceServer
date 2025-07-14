@@ -1,15 +1,45 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Param } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product } from './schema/product.schema';
 import { isValidObjectId, Model } from 'mongoose';
+import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
+import { v4 as uuidv4 } from 'uuid';
+import { UserId } from 'src/users/decorator/user.decorator';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<Product>,
+    private awsService: AwsS3Service,
   ) {}
+
+  async deleteFileById(fileId: string) {
+    return this.awsService.deleteFileById(fileId);
+  }
+
+  async getFileById(fileId: string) {
+    return this.awsService.getFileById(fileId);
+  }
+
+  async uploadFile(file: Express.Multer.File) {
+    const fileType = file.mimetype.split('/')[1];
+    const fileId = `images/${uuidv4()}.${fileType}`;
+    await this.awsService.uploadFile(fileId, file);
+    return fileId;
+  }
+  async uploadFiles(files: Express.Multer.File[]) {
+    const uploadFileIds: string[] = [];
+    for (const file of files) {
+      const fileType = file.mimetype.split('/')[1];
+      const fileId = `images/${uuidv4()}.${fileType}`;
+      await this.awsService.uploadFile(fileId, files);
+      uploadFileIds.push(fileId);
+      return uploadFileIds;
+    }
+  }
+
   async create(createProductDto: CreateProductDto) {
     const { price, quantity, itemName } = createProductDto;
     const createdProduct = await this.productModel.create({
