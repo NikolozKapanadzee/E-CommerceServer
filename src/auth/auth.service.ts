@@ -60,6 +60,7 @@ export class AuthService {
     return {
       message: 'Sign in successful',
       token,
+      role: existUser.role,
     };
   }
   async getCurrentUser(userId: string) {

@@ -33,11 +33,13 @@ export class ProductsController {
     return this.productsService.getFileById(fileId);
   }
 
+  @UseGuards(IsAuthGuard, IsAdminGuard)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   UploadFile(@UploadedFile() file: Express.Multer.File) {
     return this.productsService.uploadFile(file);
   }
+  @UseGuards(IsAuthGuard, IsAdminGuard)
   @Post('upload-many')
   @UseInterceptors(FilesInterceptor('files'))
   UploadFiles(@UploadedFiles() files: Express.Multer.File[]) {

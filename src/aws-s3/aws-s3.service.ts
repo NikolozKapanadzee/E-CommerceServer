@@ -1,6 +1,6 @@
 import {
   DeleteObjectCommand,
-  GetObjectAclCommand,
+  GetObjectCommand,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
@@ -47,7 +47,7 @@ export class AwsS3Service {
       Key: fileId,
       Bucket: this.bucketName,
     };
-    const getCommand = new GetObjectAclCommand(config);
+    const getCommand = new GetObjectCommand(config);
     const fileStream = await this.s3.send(getCommand);
     console.log(fileStream, 'filestrewam');
   }

@@ -33,17 +33,18 @@ export class ProductsService {
     for (const file of files) {
       const fileType = file.mimetype.split('/')[1];
       const fileId = `images/${uuidv4()}.${fileType}`;
-      await this.awsService.uploadFile(fileId, files);
+      await this.awsService.uploadFile(fileId, file);
       uploadFileIds.push(fileId);
     }
     return uploadFileIds;
   }
 
   async create(createProductDto: CreateProductDto, userId: string) {
-    const createdProduct = await this.productModel.create({
+    const productData = {
       ...createProductDto,
       author: userId,
-    });
+    };
+    const createdProduct = await this.productModel.create(productData);
     return {
       message: 'product created successfully',
       product: createdProduct,
