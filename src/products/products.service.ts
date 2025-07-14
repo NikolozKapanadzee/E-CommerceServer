@@ -6,7 +6,6 @@ import { Product } from './schema/product.schema';
 import { isValidObjectId, Model } from 'mongoose';
 import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
 import { v4 as uuidv4 } from 'uuid';
-import { UserId } from 'src/users/decorator/user.decorator';
 
 @Injectable()
 export class ProductsService {
@@ -36,16 +35,14 @@ export class ProductsService {
       const fileId = `images/${uuidv4()}.${fileType}`;
       await this.awsService.uploadFile(fileId, files);
       uploadFileIds.push(fileId);
-      return uploadFileIds;
     }
+    return uploadFileIds;
   }
 
-  async create(createProductDto: CreateProductDto) {
-    const { price, quantity, itemName } = createProductDto;
+  async create(createProductDto: CreateProductDto, userId: string) {
     const createdProduct = await this.productModel.create({
-      price,
-      quantity,
-      itemName,
+      ...createProductDto,
+      author: userId,
     });
     return {
       message: 'product created successfully',
@@ -54,14 +51,16 @@ export class ProductsService {
   }
 
   async findAll() {
-    return this.productModel.find();
+    return this.productModel.find().populate('author', 'email role');
   }
 
   async findOne(id: string) {
     if (!isValidObjectId(id)) {
       throw new BadRequestException('Invalid ID format');
     }
-    const product = await this.productModel.findById(id);
+    const product = await this.productModel
+      .findById(id)
+      .populate('author', 'email role');
     if (!product) {
       throw new BadRequestException('Product Does Not Exist');
     }

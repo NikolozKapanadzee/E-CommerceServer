@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { Role } from 'src/common/enum/roles.enum';
 
 @Schema({ timestamps: true })
 export class User {
@@ -24,11 +25,11 @@ export class User {
   stripeCustomerId: string;
 
   @Prop({
-    type: [mongoose.Types.ObjectId],
-    ref: 'product',
-    default: [],
+    required: true,
+    enum: Role,
+    default: Role.CLIENT,
   })
-  products: mongoose.Types.ObjectId[];
+  role: Role;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

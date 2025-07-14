@@ -14,8 +14,10 @@ import {
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { IsAuthGuard } from 'src/auth/guard/isAuth.gurad';
+import { IsAuthGuard } from 'src/common/guard/isAuth.guard';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { IsAdminGuard } from 'src/common/guard/isAdmin.guard';
+import { UserId } from 'src/common/decorator/user.decorator';
 
 @Controller('products')
 export class ProductsController {
@@ -42,10 +44,10 @@ export class ProductsController {
     return this.productsService.uploadFiles(files);
   }
 
-  @UseGuards(IsAuthGuard)
+  @UseGuards(IsAuthGuard, IsAdminGuard)
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productsService.create(createProductDto);
+  create(@Body() createProductDto: CreateProductDto, @UserId() userId: string) {
+    return this.productsService.create(createProductDto, userId);
   }
 
   @Get()
@@ -57,12 +59,12 @@ export class ProductsController {
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(id);
   }
-  @UseGuards(IsAuthGuard)
+  @UseGuards(IsAuthGuard, IsAdminGuard)
   @Put(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productsService.update(id, updateProductDto);
   }
-  @UseGuards(IsAuthGuard)
+  @UseGuards(IsAuthGuard, IsAdminGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.productsService.remove(id);
