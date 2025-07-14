@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ProductsModule } from './products/products.module';
 import { AuthModule } from './auth/auth.module';
 import { StripeModule } from './stripe/stripe.module';
+import { AwsS3Module } from './aws-s3/aws-s3.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { StripeModule } from './stripe/stripe.module';
     ProductsModule,
     AuthModule,
     StripeModule,
+    AwsS3Module,
   ],
   controllers: [AppController],
   providers: [AppService],

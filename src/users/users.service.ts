@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schema/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -7,6 +6,7 @@ import { isValidObjectId, Model } from 'mongoose';
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+
   async findAll() {
     return this.userModel.find();
   }

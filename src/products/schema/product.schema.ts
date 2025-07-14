@@ -18,6 +18,12 @@ export class Product {
     required: true,
   })
   quantity: number;
+
+  @Prop({
+    type: String,
+    required: true,
+  })
+  img: string;
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
