@@ -8,6 +8,16 @@ export class Product {
     type: String,
     required: true,
   })
+  description: string;
+  @Prop({
+    type: String,
+    required: true,
+  })
+  category: string;
+  @Prop({
+    type: String,
+    required: true,
+  })
   itemName: string;
   @Prop({
     type: Number,
@@ -16,17 +26,10 @@ export class Product {
   })
   price: number;
   @Prop({
-    type: Number,
-    required: true,
-    min: 0,
-  })
-  quantity: number;
-
-  @Prop({
-    type: String,
+    type: [String],
     required: true,
   })
-  img: string;
+  img: string[];
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: User.name,
@@ -36,16 +39,3 @@ export class Product {
 }
 
 export const ProductsSchema = SchemaFactory.createForClass(Product);
-
-ProductsSchema.virtual('total').get(function () {
-  return this.price * this.quantity;
-});
-ProductsSchema.set('toJSON', {
-  virtuals: true,
-  transform: (_: any, ret: any) => {
-    delete ret.id;
-    return ret;
-  },
-});
-
-ProductsSchema.set('toObject', { virtuals: true });

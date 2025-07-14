@@ -45,9 +45,14 @@ export class ProductsService {
       author: userId,
     };
     const createdProduct = await this.productModel.create(productData);
+    const populatedProduct = await this.productModel
+      .findById(createdProduct._id)
+      .populate('author', 'email role')
+      .exec();
+
     return {
       message: 'product created successfully',
-      product: createdProduct,
+      product: populatedProduct,
     };
   }
 
@@ -99,7 +104,7 @@ export class ProductsService {
     }
     return {
       message: 'product deleted successfully',
-      product: deleteProduct.toJSON(),
+      product: deleteProduct,
     };
   }
 }

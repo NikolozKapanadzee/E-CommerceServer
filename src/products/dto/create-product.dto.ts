@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateProductDto {
   @IsNotEmpty()
@@ -7,13 +7,13 @@ export class CreateProductDto {
   @IsNumber()
   @IsNotEmpty()
   price: number;
-  @IsNumber()
-  @IsNotEmpty()
-  quantity: number;
   @IsNotEmpty()
   @IsString()
-  img: string;
-  get total(): number {
-    return this.price * this.quantity;
-  }
+  category: string;
+  @IsNotEmpty()
+  @IsString()
+  description: string;
+  @IsArray()
+  @IsString({ each: true })
+  img: string[];
 }
