@@ -8,8 +8,8 @@ import {
 } from '@nestjs/common';
 import { StripeService } from './stripe.service';
 import { PaymentDto } from './dto/create-payment.dto';
-import { UserId } from 'src/users/decorator/user.decorator';
-import { IsAuthGuard } from 'src/auth/guard/isAuth.gurad';
+import { UserId } from 'src/common/decorator/user.decorator';
+import { IsAuthGuard } from 'src/common/guard/isAuth.guard';
 import { Request } from 'express';
 
 @Controller('stripe')

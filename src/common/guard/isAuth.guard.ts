@@ -18,25 +18,24 @@ export class IsAuthGuard implements CanActivate {
     if (!token) {
       return false;
     }
-
     try {
       const payload = this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET,
       });
-      req.user = { _id: payload.id };
+      req.user = {
+        _id: payload.id,
+        role: payload.role,
+      };
     } catch (e) {
       throw new UnauthorizedException('token expired');
     }
 
     return true;
   }
-
   getTokenFromHeadrs(headers) {
     const authorization = headers['authorization'];
     if (!authorization) return null;
-
     const [type, token] = authorization.split(' ');
-
     return type === 'Bearer' ? token : null;
   }
 }

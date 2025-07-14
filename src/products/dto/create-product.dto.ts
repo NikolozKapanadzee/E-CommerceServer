@@ -10,6 +10,9 @@ export class CreateProductDto {
   @IsNumber()
   @IsNotEmpty()
   quantity: number;
+  @IsNotEmpty()
+  @IsString()
+  img: string;
   get total(): number {
     return this.price * this.quantity;
   }
