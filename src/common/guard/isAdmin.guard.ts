@@ -16,7 +16,6 @@ export class IsAdminGuard implements CanActivate {
     if (!user || user.role !== Role.ADMIN) {
       throw new ForbiddenException('access denied admins only');
     }
-
     return true;
   }
 }
