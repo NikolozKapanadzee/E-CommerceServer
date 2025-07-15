@@ -13,7 +13,6 @@ export class ProductsService {
     @InjectModel(Product.name) private productModel: Model<Product>,
     private awsService: AwsS3Service,
   ) {}
-
   async deleteFileById(fileId: string) {
     return this.awsService.deleteFileById(fileId);
   }
@@ -21,7 +20,6 @@ export class ProductsService {
   async getFileById(fileId: string) {
     return this.awsService.getFileById(fileId);
   }
-
   async uploadFile(file: Express.Multer.File) {
     const fileType = file.mimetype.split('/')[1];
     const fileId = `images/${uuidv4()}.${fileType}`;
@@ -38,7 +36,6 @@ export class ProductsService {
     }
     return uploadFileIds;
   }
-
   async create(createProductDto: CreateProductDto, userId: string) {
     const productData = {
       ...createProductDto,
@@ -49,17 +46,15 @@ export class ProductsService {
       .findById(createdProduct._id)
       .populate('author', 'email role')
       .exec();
-
     return {
       message: 'product created successfully',
-      product: populatedProduct,
+      data: populatedProduct,
     };
   }
 
   async findAll() {
     return this.productModel.find().populate('author', 'email role');
   }
-
   async findOne(id: string) {
     if (!isValidObjectId(id)) {
       throw new BadRequestException('Invalid ID format');
@@ -72,7 +67,6 @@ export class ProductsService {
     }
     return product;
   }
-
   async update(id: string, updateProductDto: UpdateProductDto) {
     if (!isValidObjectId(id)) {
       throw new BadRequestException('Invalid ID format');
@@ -90,10 +84,9 @@ export class ProductsService {
     }
     return {
       message: 'product updated successfully',
-      product: updatedProduct,
+      data: updatedProduct,
     };
   }
-
   async remove(id: string) {
     if (!isValidObjectId(id)) {
       throw new BadRequestException('Invalid ID format');
@@ -104,7 +97,7 @@ export class ProductsService {
     }
     return {
       message: 'product deleted successfully',
-      product: deleteProduct,
+      data: deleteProduct,
     };
   }
 }

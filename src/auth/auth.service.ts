@@ -30,7 +30,7 @@ export class AuthService {
     });
 
     return {
-      message: 'Sign up successful',
+      message: 'sign up successful',
       data: {
         _id: newUser._id,
         email: newUser.email,
@@ -58,7 +58,7 @@ export class AuthService {
     };
     const token = this.jwtService.sign(payload, { expiresIn: '1h' });
     return {
-      message: 'Sign in successful',
+      message: 'sign in successful',
       token,
       role: existUser.role,
     };

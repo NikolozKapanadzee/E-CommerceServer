@@ -23,11 +23,13 @@ import { UserId } from 'src/common/decorator/user.decorator';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
+  @UseGuards(IsAuthGuard, IsAdminGuard)
   @Delete('file')
   deleteFile(@Body('fileId') fileId: string) {
     return this.productsService.deleteFileById(fileId);
   }
 
+  @UseGuards(IsAuthGuard, IsAdminGuard)
   @Post('get-file')
   getFile(@Body('fileId') fileId: string) {
     return this.productsService.getFileById(fileId);

@@ -6,7 +6,6 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProductsModule } from './products/products.module';
 import { AuthModule } from './auth/auth.module';
-import { StripeModule } from './stripe/stripe.module';
 import { AwsS3Module } from './aws-s3/aws-s3.module';
 
 @Module({
@@ -16,7 +15,6 @@ import { AwsS3Module } from './aws-s3/aws-s3.module';
     MongooseModule.forRoot(process.env.MONGO_URL!),
     ProductsModule,
     AuthModule,
-    StripeModule,
     AwsS3Module,
   ],
   controllers: [AppController],
