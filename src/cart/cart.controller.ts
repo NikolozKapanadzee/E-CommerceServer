@@ -19,6 +19,7 @@ export class CartController {
   constructor(private readonly cartService: CartService) {}
 
   @UseGuards(IsAuthGuard)
+  //shesadzloa gafixa dachirdes,userId ver igebda tu ar vregistrirebodit
   @Post()
   create(@Body() createCartDto: CreateCartDto, @UserId() userId: string) {
     return this.cartService.create(createCartDto, userId);

@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   UploadedFiles,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -18,10 +19,16 @@ import { IsAuthGuard } from 'src/common/guard/isAuth.guard';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { IsAdminGuard } from 'src/common/guard/isAdmin.guard';
 import { UserId } from 'src/common/decorator/user.decorator';
+import { FilterProductsDTO } from './dto/filter.products.dto';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
+
+  @Get('filter')
+  findWithFilters(@Query() filterProductsDto: FilterProductsDTO) {
+    return this.productsService.findWithFilter(filterProductsDto);
+  }
 
   @UseGuards(IsAuthGuard, IsAdminGuard)
   @Delete('file')
