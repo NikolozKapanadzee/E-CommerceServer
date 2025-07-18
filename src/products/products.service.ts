@@ -6,6 +6,7 @@ import { Product } from './schema/product.schema';
 import { isValidObjectId, Model } from 'mongoose';
 import { AwsS3Service } from 'src/aws/aws-s3.service';
 import { v4 as uuidv4 } from 'uuid';
+import { FilterProductsDTO } from './dto/filter.products.dto';
 
 @Injectable()
 export class ProductsService {
@@ -99,5 +100,14 @@ export class ProductsService {
       message: 'product deleted successfully',
       data: deleteProduct,
     };
+  }
+
+  findWithFilter(filterProductsDto: FilterProductsDTO) {
+    const query: any = {};
+    if (filterProductsDto.category) {
+      query.category = { $regex: filterProductsDto.category, $options: 'i' };
+    }
+
+    return this.productModel.find(query);
   }
 }
