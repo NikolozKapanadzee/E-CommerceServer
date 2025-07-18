@@ -6,9 +6,10 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProductsModule } from './products/products.module';
 import { AuthModule } from './auth/auth.module';
-import { AwsS3Module } from './aws-s3/aws-s3.module';
+import { AwsS3Module } from './aws/aws-s3.module';
 import { EmailModule } from './email/email.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
     AuthModule,
     AwsS3Module,
     EmailModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService],

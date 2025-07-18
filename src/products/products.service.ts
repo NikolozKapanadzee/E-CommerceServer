@@ -4,7 +4,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product } from './schema/product.schema';
 import { isValidObjectId, Model } from 'mongoose';
-import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
+import { AwsS3Service } from 'src/aws/aws-s3.service';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
