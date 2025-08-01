@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: [
-      'https://e-commerce-client-flame.vercel.app',
+      'https://e-commerce-client-85kswda8y-nikolozs-projects-8024eac0.vercel.app/',
       'http://localhost:3000',
       'http://localhost:3001',
     ],
